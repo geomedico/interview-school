@@ -1,0 +1,94 @@
+version: '3.3'
+
+services:
+
+  # PostgreSQL Service
+  db:
+    image: postgres:12
+    container_name: portfolio-db
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    ports:
+      - "5432:5432"
+    env_file: 
+      - .env   
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - portfolio-network
+  
+  # Backend Service (NestJS App)
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: portfolio-backend
+    environment:
+      POSTGRES_HOST: ${DATABASE_HOST}
+      POSTGRES_PORT: ${DATABASE_PORT}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    ports:
+      - "3000:3000"
+    env_file: 
+      - .env   
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/usr/src/app
+    networks:
+      - portfolio-network
+
+  #Backend Seeder Service
+  backend-seed:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend-seed
+    container_name: portfolio-backend-seed
+    command: ["node", "dist/postgres/seeds/seeder.js", "--limit", "50"]
+    environment:
+      POSTGRES_HOST: ${DATABASE_HOST}
+      POSTGRES_PORT: ${DATABASE_PORT}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    depends_on:
+      - db
+    env_file: 
+      - .env   
+    volumes:
+      - ./backend:/usr/src/app
+    networks:
+      - portfolio-network    
+
+  #Backend Test Service
+  backend-test:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend-test
+    container_name: portfolio-backend-test
+    command: ["pnpm", "run", "test"]
+    environment:
+      POSTGRES_HOST: ${DATABASE_HOST}
+      POSTGRES_PORT: ${DATABASE_PORT}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    depends_on:
+      - db
+    env_file: 
+      - .env   
+    volumes:
+      - ./backend:/usr/src/app
+    networks:
+      - portfolio-network
+
+networks:
+  portfolio-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
