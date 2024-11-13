@@ -10,7 +10,7 @@ import { StudentService } from './../students/student.service';
 import { PDFService } from '../pdf/pdf.service';
 import { CreateSectionDto } from './DTO/create-section.dto';
 import { DaysOfWeek } from './../../common/enums';
-import { BadRequestException, NotFoundException, ConflictException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 const mockRepository = jest.fn(() => ({
   create: jest.fn(),
@@ -47,7 +47,10 @@ describe('SectionsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SectionsService,
-        { provide: getRepositoryToken(SectionEntity), useFactory: mockRepository },
+        {
+          provide: getRepositoryToken(SectionEntity),
+          useFactory: mockRepository,
+        },
         { provide: TeacherService, useValue: mockTeacherService },
         { provide: SubjectService, useValue: mockSubjectService },
         { provide: ClassroomService, useValue: mockClassroomService },
@@ -72,7 +75,11 @@ describe('SectionsService', () => {
         teacherId: 'teacher-id',
         subjectId: 'subject-id',
         classroomId: 'classroom-id',
-        daysOfWeek: [DaysOfWeek.MONDAY, DaysOfWeek.WEDNESDAY, DaysOfWeek.FRIDAY],
+        daysOfWeek: [
+          DaysOfWeek.MONDAY,
+          DaysOfWeek.WEDNESDAY,
+          DaysOfWeek.FRIDAY,
+        ],
         startTime: '08:00',
         endTime: '09:00',
         studentIds: ['student1', 'student2'],
@@ -101,7 +108,9 @@ describe('SectionsService', () => {
       const result = await service.createSection(mockDto);
 
       expect(result).toEqual(mockSection);
-      expect(sectionRepo.save).toHaveBeenCalledWith(expect.objectContaining(mockSection));
+      expect(sectionRepo.save).toHaveBeenCalledWith(
+        expect.objectContaining(mockSection),
+      );
     });
 
     it('should throw an error if days of the week are invalid', async () => {
@@ -155,7 +164,9 @@ describe('SectionsService', () => {
       const result = await service.downLoadSchedule('student-id');
 
       expect(result).toEqual(mockBuffer);
-      expect(mockPDFService.generateSchedulePDF).toHaveBeenCalledWith(mockStudent);
+      expect(mockPDFService.generateSchedulePDF).toHaveBeenCalledWith(
+        mockStudent,
+      );
     });
   });
 });

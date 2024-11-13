@@ -16,3 +16,28 @@ This is meant as a backend-only take home test project. You will not be scored o
 
 ## Time Constraints
 Do not spend more than 4 hours implementing the goals above. It's not mandatory that the goals above are 100% working, due to the time constraint, we're most interested in seeing your best work. Write this code as if you're contributing to a larger project with multiple developers who will critique your work. If you're running out of time and something isn't funcional yet, that's okay, make sure that whatever is functional is both complete and polished.
+
+## Getting Started
+
+1. **Set Up the `.env` File**
+
+   Create a `.env` file in the root directory of your project. This file will store your environment variables, which are essential for connecting to the PostgreSQL database.
+
+   Here’s an example of the necessary environment variables:
+
+   ```env
+   DATABASE_HOST=db  # The name should match the Postgres service name in the docker-compose.yaml
+   DATABASE_PORT=5432
+   DATABASE_USER=postgres
+   DATABASE_PASSWORD=password
+   DATABASE_NAME=school
+
+2. **Build and Start the Application**
+
+   To build and run the application using Docker, follow these steps:
+
+   Open a terminal in the project directory.
+
+   Execute the following command:
+
+   docker-compose up --build

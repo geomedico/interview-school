@@ -19,10 +19,7 @@ describe('PDFService', () => {
     mockLogger = { error: jest.fn() } as any;
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        PDFService,
-        { provide: Logger, useValue: mockLogger },
-      ],
+      providers: [PDFService, { provide: Logger, useValue: mockLogger }],
     }).compile();
 
     pdfService = module.get<PDFService>(PDFService);

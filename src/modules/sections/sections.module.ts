@@ -17,7 +17,7 @@ import { StudentModule } from './../students/student.module';
     SubjectModule,
     ClassroomModule,
     StudentModule,
-    PDFModule
+    PDFModule,
   ],
   controllers: [SectionsController],
   providers: [SectionsService],

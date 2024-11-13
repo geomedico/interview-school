@@ -4,7 +4,7 @@ import { StudentEntity } from './../../postgres/pg-models/student.entity';
 
 @Injectable()
 export class PDFService {
-  constructor(private logger: Logger) { }
+  constructor(private logger: Logger) {}
   async generateSchedulePDF(student: StudentEntity): Promise<Buffer> {
     try {
       const pdfDoc = await PDFDocument.create();
@@ -21,7 +21,6 @@ export class PDFService {
 
       const pdfBytes = await pdfDoc.save();
       return Buffer.from(pdfBytes);
-
     } catch (e) {
       this.logger.error(e);
     }

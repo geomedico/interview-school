@@ -130,8 +130,10 @@ export class SectionsService {
       student.sections.push(section);
       await this.sectionRepository.save(student);
     } catch (error) {
-
-      if (error instanceof NotFoundException || error instanceof ConflictException) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof ConflictException
+      ) {
         throw error;
       }
 
