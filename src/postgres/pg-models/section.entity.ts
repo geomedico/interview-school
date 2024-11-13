@@ -29,10 +29,11 @@ export class SectionEntity {
 
   @Column({
     type: 'enum',
+    array: true,
     enum: DaysOfWeek,
-    default: DaysOfWeek.MONDAY,
+    default: [],
   })
-  daysOfWeek: DaysOfWeek;
+  daysOfWeek: DaysOfWeek[];
 
   @ManyToOne(() => TeacherEntity, (teacher) => teacher.sections)
   @JoinColumn()

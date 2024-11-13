@@ -5,7 +5,7 @@ services:
   # PostgreSQL Service
   db:
     image: postgres:12
-    container_name: portfolio-db
+    container_name: school-db
     environment:
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
@@ -17,14 +17,14 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:
-      - portfolio-network
+      - school-network
   
   # Backend Service (NestJS App)
   backend:
     build:
       context: .
       dockerfile: Dockerfile.backend
-    container_name: portfolio-backend
+    container_name: school-backend
     environment:
       POSTGRES_HOST: ${DATABASE_HOST}
       POSTGRES_PORT: ${DATABASE_PORT}
@@ -38,16 +38,16 @@ services:
     depends_on:
       - db
     volumes:
-      - ./backend:/usr/src/app
+      - .:/usr/src/app
     networks:
-      - portfolio-network
+      - school-network
 
   #Backend Seeder Service
   backend-seed:
     build:
       context: .
       dockerfile: Dockerfile.backend-seed
-    container_name: portfolio-backend-seed
+    container_name: school-backend-seed
     command: ["node", "dist/postgres/seeds/seeder.js", "--limit", "50"]
     environment:
       POSTGRES_HOST: ${DATABASE_HOST}
@@ -60,16 +60,16 @@ services:
     env_file: 
       - .env   
     volumes:
-      - ./backend:/usr/src/app
+      - .:/usr/src/app
     networks:
-      - portfolio-network    
+      - school-network    
 
   #Backend Test Service
   backend-test:
     build:
       context: .
       dockerfile: Dockerfile.backend-test
-    container_name: portfolio-backend-test
+    container_name: school-backend-test
     command: ["pnpm", "run", "test"]
     environment:
       POSTGRES_HOST: ${DATABASE_HOST}
@@ -82,12 +82,12 @@ services:
     env_file: 
       - .env   
     volumes:
-      - ./backend:/usr/src/app
+      - .:/usr/src/app
     networks:
-      - portfolio-network
+      - school-network
 
 networks:
-  portfolio-network:
+  school-network:
     driver: bridge
 
 volumes:

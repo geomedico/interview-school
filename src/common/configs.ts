@@ -19,7 +19,7 @@ const APPConfig = registerAs(ConfigKey.App, () => ({
     Environment.Development,
   port: Number(process.env.APP_PORT) || 3000,
   seeds: process.env.RUN_SEED || true,
-  appName: process.env.APP_NAME || 'portfolio-backend',
+  appName: process.env.APP_NAME || 'school-backend',
 }));
 
 const DBConfig = registerAs(ConfigKey.Db, () => ({
@@ -27,7 +27,7 @@ const DBConfig = registerAs(ConfigKey.Db, () => ({
   port: Number(process.env.POSTGRES_PORT) || 5432,
   username: process.env.POSTGRES_USER || 'postgres',
   password: process.env.POSTGRES_PASSWORD || 'password',
-  database: process.env.POSTGRES_DB || 'portfolio',
+  database: process.env.POSTGRES_DB || 'school',
 }));
 
 export const configurations = [APPConfig, DBConfig];
