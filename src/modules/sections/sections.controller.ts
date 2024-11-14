@@ -1,4 +1,3 @@
-// sections.controller.ts
 import { Controller, Post, Get, Param, Body, Res } from '@nestjs/common';
 import { SectionsService } from './sections.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -14,6 +13,7 @@ export class SectionsController {
   @ApiOperation({ summary: 'Create a section' })
   async createSection(@Body() createSectionDto: CreateSectionDto) {
     try {
+      console.log('createSectionDto::', createSectionDto);
       const section =
         await this.sectionsService.createSection(createSectionDto);
       return { message: 'Section created successfully', section };

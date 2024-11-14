@@ -9,6 +9,7 @@ jest.mock('pdf-lib', () => ({
   PDFDocument: {
     create: jest.fn(),
   },
+  rgb: jest.fn(),
 }));
 
 describe('PDFService', () => {
@@ -31,16 +32,17 @@ describe('PDFService', () => {
 
   describe('generateSchedulePDF', () => {
     it('should generate a PDF buffer for a student', async () => {
-      // Mock the PDF document creation
+      const mockPage = {
+        drawText: jest.fn(),
+      };
+
       const mockPDFDoc = {
-        addPage: jest.fn().mockReturnValue({
-          drawText: jest.fn(),
-        }),
+        addPage: jest.fn().mockReturnValue(mockPage),
         save: jest.fn().mockResolvedValue(Buffer.from('mocked-pdf-content')),
       };
+
       (PDFDocument.create as jest.Mock).mockResolvedValue(mockPDFDoc);
 
-      // Mock the student entity
       const mockStudent: StudentEntity = {
         name: 'John Doe',
         sections: [
@@ -64,12 +66,14 @@ describe('PDFService', () => {
       const result = await pdfService.generateSchedulePDF(mockStudent);
 
       expect(PDFDocument.create).toHaveBeenCalled();
-      expect(mockPDFDoc.addPage).toHaveBeenCalled();
+      expect(mockPDFDoc.addPage).toHaveBeenCalledWith([600, 800]);
+
       expect(mockPDFDoc.save).toHaveBeenCalled();
       expect(result).toEqual(Buffer.from('mocked-pdf-content'));
     });
 
     it('should log an error if PDF generation fails', async () => {
+      // Mock PDFDocument.create to throw an error
       (PDFDocument.create as jest.Mock).mockImplementation(() => {
         throw new Error('PDF creation failed');
       });

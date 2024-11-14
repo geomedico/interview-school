@@ -10,27 +10,36 @@ export class SectionTimeConstraint implements ValidatorConstraintInterface {
     const startTime = (args.object as any).startTime;
     const duration = this.calculateDuration(startTime, endTime);
 
-    // Validate duration is 50 or 80 minutes
     if (duration !== 50 && duration !== 80) {
+      args.constraints = [
+        `Invalid duration: ${duration}. Duration must be either 50 or 80 minutes.`,
+      ];
       return false;
     }
 
-    // Validate start time is no earlier than 7:30 AM
     if (!this.isWithinAllowedStartTime(startTime)) {
+      args.constraints = [
+        `Invalid start time: ${startTime}. Allowed start times are between 07:30 and 22:00.`,
+      ];
       return false;
     }
 
-    // Validate end time is no later than 10:00 PM
     if (!this.isWithinAllowedEndTime(endTime)) {
+      args.constraints = [
+        `Invalid end time: ${endTime}. Allowed end times are between 07:30 and 22:00.`,
+      ];
       return false;
     }
 
     return true;
   }
 
-  // defaultMessage(_args: ValidationArguments) {
-  //   return 'Section duration must be either 50 or 80 minutes, start no earlier than 07:30 AM, and end no later than 10:00 PM.';
-  // }
+  defaultMessage(args: ValidationArguments): string {
+    if (!args.constraints || args.constraints.length === 0) {
+      return 'Invalid time configuration for section.';
+    }
+    return args.constraints[0];
+  }
 
   private calculateDuration(start: string, end: string): number {
     const [startHour, startMinute] = start.split(':').map(Number);

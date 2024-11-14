@@ -29,13 +29,21 @@ export class SeederService {
     try {
       const teachers = await this.seedEntities(
         this.teacherRepo,
-        [{ name: 'Dr. John Smith' }, { name: 'Prof. Emily Johnson' }],
+        [
+          { name: 'Dr. John Smith' },
+          { name: 'Prof. Emily Johnson' },
+          { name: 'Dr. Jim Beam' },
+        ],
         'name',
       );
 
       const subjects = await this.seedEntities(
         this.subjectRepo,
-        [{ name: 'Mathematics 101' }, { name: 'Chemistry 101' }],
+        [
+          { name: 'Mathematics 101' },
+          { name: 'Chemistry 102' },
+          { name: 'Computer Engineering 103' },
+        ],
         'name',
       );
 
@@ -47,7 +55,12 @@ export class SeederService {
 
       const students = await this.seedEntities(
         this.studentRepo,
-        [{ name: 'Alice' }, { name: 'Bob' }, { name: 'Charlie' }],
+        [
+          { name: 'Alice' },
+          { name: 'Bob' },
+          { name: 'Charlie' },
+          { name: 'Mike' },
+        ],
         'name',
       );
 
@@ -55,6 +68,7 @@ export class SeederService {
         {
           startTime: '08:00',
           endTime: '08:50',
+          name: 'section #1',
           daysOfWeek: [
             DaysOfWeek.MONDAY,
             DaysOfWeek.WEDNESDAY,
@@ -68,6 +82,7 @@ export class SeederService {
         {
           startTime: '09:00',
           endTime: '09:50',
+          name: 'section #2',
           daysOfWeek: [DaysOfWeek.TUESDAY, DaysOfWeek.THURSDAY],
           teacher: teachers[1],
           subject: subjects[1],

@@ -22,10 +22,13 @@ export class SectionEntity {
   id: string = uuidv4();
 
   @Column()
-  startTime: string; // E.g., "07:30"
+  name: string;
 
   @Column()
-  endTime: string; // E.g., "08:20" or "09:50"
+  startTime: string;
+
+  @Column()
+  endTime: string;
 
   @Column({
     type: 'enum',

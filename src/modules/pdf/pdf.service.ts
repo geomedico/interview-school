@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PDFDocument } from 'pdf-lib';
+import { PDFDocument, rgb } from 'pdf-lib';
 import { StudentEntity } from './../../postgres/pg-models/student.entity';
 
 @Injectable()
@@ -8,15 +8,31 @@ export class PDFService {
   async generateSchedulePDF(student: StudentEntity): Promise<Buffer> {
     try {
       const pdfDoc = await PDFDocument.create();
-      const page = pdfDoc.addPage();
+      const page = pdfDoc.addPage([600, 800]);
+      const fontSize = 14;
+      const lineHeight = 24;
+      let yPosition = 750;
 
-      page.drawText(`Schedule for ${student.name}`, { x: 50, y: 750 });
+      page.drawText(`Schedule for ${student.name}`, {
+        x: 50,
+        y: yPosition,
+        size: 20,
+        color: rgb(0, 0, 0),
+      });
 
-      let yPosition = 700;
+      yPosition -= 40;
+
       student.sections.forEach((section, index) => {
         const sectionText = `${index + 1}. ${section.subject.name} (${section.startTime} - ${section.endTime}), Teacher: ${section.teacher.name}, Classroom: ${section.classroom.roomNumber}`;
-        page.drawText(sectionText, { x: 50, y: yPosition });
-        yPosition -= 20;
+
+        page.drawText(sectionText, {
+          x: 50,
+          y: yPosition,
+          size: fontSize,
+          color: rgb(0, 0, 0),
+        });
+
+        yPosition -= lineHeight;
       });
 
       const pdfBytes = await pdfDoc.save();

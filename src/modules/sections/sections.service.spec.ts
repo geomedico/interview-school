@@ -75,6 +75,7 @@ describe('SectionsService', () => {
         teacherId: 'teacher-id',
         subjectId: 'subject-id',
         classroomId: 'classroom-id',
+        name: 'Computer Engineering',
         daysOfWeek: [
           DaysOfWeek.MONDAY,
           DaysOfWeek.WEDNESDAY,
@@ -90,6 +91,7 @@ describe('SectionsService', () => {
         subject: { id: 'subject-id' },
         classroom: { id: 'classroom-id' },
         students: [{ id: 'student1' }, { id: 'student2' }],
+        name: 'Computer Engineering',
         daysOfWeek: mockDto.daysOfWeek,
         startTime: mockDto.startTime,
         endTime: mockDto.endTime,
@@ -118,6 +120,7 @@ describe('SectionsService', () => {
         teacherId: 'teacher-id',
         subjectId: 'subject-id',
         classroomId: 'classroom-id',
+        name: 'Computer Engineering',
         daysOfWeek: [DaysOfWeek.SUNDAY],
         startTime: '08:00',
         endTime: '09:00',
@@ -140,7 +143,7 @@ describe('SectionsService', () => {
 
       await service.enrollStudentInSection('student-id', 'section-id');
 
-      expect(sectionRepo.save).toHaveBeenCalledWith(mockStudent);
+      expect(sectionRepo.save).toHaveBeenCalledWith(mockSection);
     });
 
     it('should throw NotFoundException if section does not exist', async () => {

@@ -14,8 +14,14 @@ export class StudentService {
     try {
       const student = await this.studentRepository.findOne({
         where: { id: studentId },
-        relations: ['sections'],
+        relations: [
+          'sections',
+          'sections.teacher',
+          'sections.subject',
+          'sections.classroom',
+        ],
       });
+
       if (!student) {
         throw new NotFoundException(`Student with ID ${studentId} not found`);
       }

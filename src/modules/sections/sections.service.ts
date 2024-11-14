@@ -37,9 +37,10 @@ export class SectionsService {
         classroomId,
         daysOfWeek,
         startTime,
+        name,
         endTime,
-        studentIds,
-      } = createSectionDto;
+        studentIds = [],
+      } = createSectionDto || {};
 
       const teacher = await this.teacherService.findById(teacherId);
 
@@ -62,6 +63,7 @@ export class SectionsService {
       const section = this.sectionRepository.create({
         teacher,
         subject,
+        name,
         classroom,
         daysOfWeek,
         startTime,
@@ -127,8 +129,13 @@ export class SectionsService {
         throw new ConflictException('Schedule conflict detected');
       }
 
-      student.sections.push(section);
-      await this.sectionRepository.save(student);
+      if (!section.students) {
+        section.students = [];
+      }
+
+      section.students.push(student);
+
+      await this.sectionRepository.save(section);
     } catch (error) {
       if (
         error instanceof NotFoundException ||

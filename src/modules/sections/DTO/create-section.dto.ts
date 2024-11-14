@@ -20,12 +20,15 @@ export class CreateSectionDto {
   @Matches(/^(0[7-9]|1[0-9]|2[0-2]):[0-5][0-9]$/, {
     message: 'Invalid end time format',
   })
-  @Validate(SectionTimeConstraint) // Apply custom validator for duration, earliest start, and latest end time
+  @Validate(SectionTimeConstraint)
   endTime: string;
 
   @IsArray()
   @IsEnum(DaysOfWeek, { each: true })
   daysOfWeek: DaysOfWeek[];
+
+  @IsString()
+  name: string;
 
   @IsString()
   teacherId: string;
