@@ -9,6 +9,7 @@ import { TeacherModule } from './../teachers/teacher.module';
 import { SubjectModule } from './../subjects/subject.module';
 import { ClassroomModule } from './../classrooms/classroom.module';
 import { StudentModule } from './../students/student.module';
+import { ScheduleConflictUtil } from './../../common/schedule-conflict.util';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { StudentModule } from './../students/student.module';
     PDFModule,
   ],
   controllers: [SectionsController],
-  providers: [SectionsService],
+  providers: [SectionsService, ScheduleConflictUtil],
   exports: [SectionsService],
 })
 export class SectionsModule {}

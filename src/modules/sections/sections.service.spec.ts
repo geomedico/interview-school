@@ -1,21 +1,30 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SectionsService } from './sections.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { SectionsService } from './sections.service';
+
 import { SectionEntity } from './../../postgres/pg-models/section.entity';
 import { TeacherService } from './../teachers/teacher.service';
 import { SubjectService } from './../subjects/subject.service';
 import { ClassroomService } from './../classrooms/classroom.service';
 import { StudentService } from './../students/student.service';
 import { PDFService } from '../pdf/pdf.service';
+
 import { CreateSectionDto } from './DTO/create-section.dto';
+import { ScheduleConflictUtil } from './../../common/schedule-conflict.util';
 import { DaysOfWeek } from './../../common/enums';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 const mockRepository = jest.fn(() => ({
   create: jest.fn(),
   save: jest.fn(),
+  find: jest.fn(),
   findOne: jest.fn(),
+  createQueryBuilder: jest.fn().mockReturnValue({
+    innerJoin: jest.fn().mockReturnThis(),
+    where: jest.fn().mockReturnThis(),
+    getMany: jest.fn(),
+  }),
 }));
 
 const mockTeacherService = {
@@ -39,6 +48,30 @@ const mockPDFService = {
   generateSchedulePDF: jest.fn(),
 };
 
+const mockScheduleConflictUtil = {
+  parseTime: jest.fn(),
+  hasTimeConflict: jest.fn(),
+  areValidDays: jest.fn((daysOfWeek) => {
+    // Mocking the real logic to validate days
+    const validPatterns = [
+      [DaysOfWeek.MONDAY, DaysOfWeek.WEDNESDAY, DaysOfWeek.FRIDAY],
+      [DaysOfWeek.TUESDAY, DaysOfWeek.THURSDAY],
+      [
+        DaysOfWeek.MONDAY,
+        DaysOfWeek.TUESDAY,
+        DaysOfWeek.WEDNESDAY,
+        DaysOfWeek.THURSDAY,
+        DaysOfWeek.FRIDAY,
+      ],
+    ];
+    return validPatterns.some(
+      (pattern) =>
+        pattern.length === daysOfWeek.length &&
+        pattern.every((day) => daysOfWeek.includes(day)),
+    );
+  }),
+};
+
 describe('SectionsService', () => {
   let service: SectionsService;
   let sectionRepo: jest.Mocked<Repository<SectionEntity>>;
@@ -56,6 +89,7 @@ describe('SectionsService', () => {
         { provide: ClassroomService, useValue: mockClassroomService },
         { provide: StudentService, useValue: mockStudentService },
         { provide: PDFService, useValue: mockPDFService },
+        { provide: ScheduleConflictUtil, useValue: mockScheduleConflictUtil },
       ],
     }).compile();
 
@@ -75,7 +109,7 @@ describe('SectionsService', () => {
         teacherId: 'teacher-id',
         subjectId: 'subject-id',
         classroomId: 'classroom-id',
-        name: 'Computer Engineering',
+        name: 'Section #test',
         daysOfWeek: [
           DaysOfWeek.MONDAY,
           DaysOfWeek.WEDNESDAY,
@@ -87,14 +121,11 @@ describe('SectionsService', () => {
       };
 
       const mockSection = {
+        ...mockDto,
         teacher: { id: 'teacher-id' },
         subject: { id: 'subject-id' },
         classroom: { id: 'classroom-id' },
         students: [{ id: 'student1' }, { id: 'student2' }],
-        name: 'Computer Engineering',
-        daysOfWeek: mockDto.daysOfWeek,
-        startTime: mockDto.startTime,
-        endTime: mockDto.endTime,
       };
 
       mockTeacherService.findById.mockResolvedValue({ id: 'teacher-id' });
@@ -104,6 +135,21 @@ describe('SectionsService', () => {
         { id: 'student1' },
         { id: 'student2' },
       ]);
+
+      sectionRepo.find.mockImplementation((options: any) => {
+        // Handle teacher conflict
+        if (options.where?.teacher) {
+          return Promise.resolve([]);
+        }
+        if (options.where?.classroom) {
+          return Promise.resolve([]);
+        }
+        if (options.where?.students) {
+          return Promise.resolve([]);
+        }
+        return Promise.resolve([]);
+      });
+      sectionRepo.find.mockResolvedValue([]);
       sectionRepo.create.mockReturnValue(mockSection as any);
       sectionRepo.save.mockResolvedValue(mockSection as any);
 
@@ -136,7 +182,13 @@ describe('SectionsService', () => {
   describe('enrollStudentInSection', () => {
     it('should enroll a student into a section', async () => {
       const mockStudent = { id: 'student-id', sections: [] };
-      const mockSection = { id: 'section-id', daysOfWeek: [DaysOfWeek.MONDAY] };
+      const mockSection = {
+        id: 'section-id',
+        daysOfWeek: [DaysOfWeek.MONDAY],
+        startTime: '08:00',
+        endTime: '09:20',
+        students: [],
+      };
 
       mockStudentService.findById.mockResolvedValue(mockStudent);
       sectionRepo.findOne.mockResolvedValue(mockSection as any);
