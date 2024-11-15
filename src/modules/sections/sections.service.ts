@@ -94,7 +94,6 @@ export class SectionsService {
         throw new ConflictException('Classroom has a scheduling conflict');
       }
 
-      // Check for time conflicts with students' other sections
       for (const student of validStudents) {
         const studentSections = await this.sectionRepository
           .createQueryBuilder('section')
@@ -146,6 +145,46 @@ export class SectionsService {
       return pdfBuffer;
     } catch (error) {
       throw new Error(`Error downloading pdf Schedule: ${error.message}`);
+    }
+  }
+
+  async releaseStudentFromSection(
+    studentId: string,
+    sectionId: string,
+  ): Promise<void> {
+    try {
+      const student = await this.studentService.findById(studentId);
+      const section = await this.sectionRepository.findOne({
+        where: { id: sectionId },
+        relations: ['students'],
+      });
+
+      if (!section) {
+        throw new NotFoundException('Section not found');
+      }
+
+      if (!student) {
+        throw new NotFoundException('Student not found');
+      }
+
+      if (!section.students.some((s) => s.id === studentId)) {
+        throw new BadRequestException(
+          'Student is not enrolled in this section',
+        );
+      }
+
+      section.students = section.students.filter((s) => s.id !== studentId);
+
+      await this.sectionRepository.save(section);
+    } catch (error) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      }
+
+      throw new Error(`Error releasing student: ${error.message}`);
     }
   }
 

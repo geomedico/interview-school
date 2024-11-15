@@ -20,71 +20,71 @@ services:
       - school-network
   
   # Backend Service (NestJS App)
-  # backend:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.backend
-  #   container_name: school-backend
-  #   environment:
-  #     POSTGRES_HOST: ${DATABASE_HOST}
-  #     POSTGRES_PORT: ${DATABASE_PORT}
-  #     POSTGRES_USER: ${DATABASE_USER}
-  #     POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-  #     POSTGRES_DB: ${DATABASE_NAME}
-  #   ports:
-  #     - "3000:3000"
-  #   env_file: 
-  #     - .env   
-  #   depends_on:
-  #     - db
-  #   volumes:
-  #     - .:/usr/src/app
-  #   networks:
-  #     - school-network
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: school-backend
+    environment:
+      POSTGRES_HOST: ${DATABASE_HOST}
+      POSTGRES_PORT: ${DATABASE_PORT}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    ports:
+      - "3000:3000"
+    env_file: 
+      - .env   
+    depends_on:
+      - db
+    volumes:
+      - .:/usr/src/app
+    networks:
+      - school-network
 
-  # #Backend Seeder Service
-  # backend-seed:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.backend-seed
-  #   container_name: school-backend-seed
-  #   command: ["node", "dist/postgres/seeds/seeder.js", "--limit", "50"]
-  #   environment:
-  #     POSTGRES_HOST: ${DATABASE_HOST}
-  #     POSTGRES_PORT: ${DATABASE_PORT}
-  #     POSTGRES_USER: ${DATABASE_USER}
-  #     POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-  #     POSTGRES_DB: ${DATABASE_NAME}
-  #   depends_on:
-  #     - db
-  #   env_file: 
-  #     - .env   
-  #   volumes:
-  #     - .:/usr/src/app
-  #   networks:
-  #     - school-network    
+  #Backend Seeder Service
+  backend-seed:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend-seed
+    container_name: school-backend-seed
+    command: ["node", "dist/postgres/seeds/seeder.js", "--limit", "50"]
+    environment:
+      POSTGRES_HOST: ${DATABASE_HOST}
+      POSTGRES_PORT: ${DATABASE_PORT}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    depends_on:
+      - db
+    env_file: 
+      - .env   
+    volumes:
+      - .:/usr/src/app
+    networks:
+      - school-network    
 
-  # #Backend Test Service
-  # backend-test:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.backend-test
-  #   container_name: school-backend-test
-  #   command: ["pnpm", "run", "test"]
-  #   environment:
-  #     POSTGRES_HOST: ${DATABASE_HOST}
-  #     POSTGRES_PORT: ${DATABASE_PORT}
-  #     POSTGRES_USER: ${DATABASE_USER}
-  #     POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-  #     POSTGRES_DB: ${DATABASE_NAME}
-  #   depends_on:
-  #     - db
-  #   env_file: 
-  #     - .env   
-  #   volumes:
-  #     - .:/usr/src/app
-  #   networks:
-  #     - school-network
+  #Backend Test Service
+  backend-test:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend-test
+    container_name: school-backend-test
+    command: ["pnpm", "run", "test"]
+    environment:
+      POSTGRES_HOST: ${DATABASE_HOST}
+      POSTGRES_PORT: ${DATABASE_PORT}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    depends_on:
+      - db
+    env_file: 
+      - .env   
+    volumes:
+      - .:/usr/src/app
+    networks:
+      - school-network
 
 networks:
   school-network:

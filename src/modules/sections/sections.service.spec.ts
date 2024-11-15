@@ -179,6 +179,48 @@ describe('SectionsService', () => {
     });
   });
 
+  describe('releaseStudentFromSection', () => {
+    it('should release a student from a section', async () => {
+      const mockSection = {
+        id: 'section-id',
+        students: [{ id: 'student-id' }],
+      };
+
+      const mockStudent = { id: 'student-id' };
+
+      sectionRepo.findOne.mockResolvedValue(mockSection as any);
+      mockStudentService.findById.mockResolvedValue(mockStudent);
+
+      await service.releaseStudentFromSection('student-id', 'section-id');
+
+      expect(sectionRepo.save).toHaveBeenCalledWith({
+        id: 'section-id',
+        students: [],
+      });
+    });
+
+    it('should throw NotFoundException if section does not exist', async () => {
+      sectionRepo.findOne.mockResolvedValue(null);
+
+      await expect(
+        service.releaseStudentFromSection('student-id', 'section-id'),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw BadRequestException if student is not in the section', async () => {
+      const mockSection = {
+        id: 'section-id',
+        students: [{ id: 'another-student-id' }],
+      };
+
+      sectionRepo.findOne.mockResolvedValue(mockSection as any);
+
+      await expect(
+        service.releaseStudentFromSection('student-id', 'section-id'),
+      ).rejects.toThrow(BadRequestException);
+    });
+  });
+
   describe('enrollStudentInSection', () => {
     it('should enroll a student into a section', async () => {
       const mockStudent = { id: 'student-id', sections: [] };
