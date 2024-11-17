@@ -14,9 +14,15 @@ export class ScheduleConflictUtil {
     existingSections: SectionEntity[],
     newSection: SectionEntity,
   ): boolean {
-    const verify = {
+    const comparator = {
       isOverlapping: false,
       overlappingDays: false,
+      validate: function (): boolean {
+        const a = this.overlappingDays;
+        const b = this.isOverlapping;
+
+        return (a && b) || (!a && b);
+      },
     };
 
     if (!newSection.startTime || !newSection.endTime) {
@@ -34,11 +40,11 @@ export class ScheduleConflictUtil {
       const sectionStartTime = this.parseTime(section.startTime);
       const sectionEndTime = this.parseTime(section.endTime);
 
-      verify.overlappingDays = newSection?.daysOfWeek?.some((day) =>
+      comparator.overlappingDays = newSection?.daysOfWeek?.some((day) =>
         section?.daysOfWeek?.includes(day),
       );
 
-      verify.isOverlapping =
+      comparator.isOverlapping =
         (newSectionStartTime >= sectionStartTime &&
           newSectionStartTime < sectionEndTime) ||
         (newSectionEndTime > sectionStartTime &&
@@ -46,7 +52,7 @@ export class ScheduleConflictUtil {
         (sectionStartTime >= newSectionStartTime &&
           sectionEndTime <= newSectionEndTime);
 
-      return verify.overlappingDays && verify.isOverlapping;
+      return comparator.validate();
     });
   }
 
