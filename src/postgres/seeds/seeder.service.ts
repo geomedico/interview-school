@@ -49,7 +49,11 @@ export class SeederService {
 
       const classrooms = await this.seedEntities(
         this.classroomRepo,
-        [{ roomNumber: '101A' }, { roomNumber: '102B' }],
+        [
+          { roomNumber: '101A' },
+          { roomNumber: '102B' },
+          { roomNumber: '103C' },
+        ],
         'roomNumber',
       );
 

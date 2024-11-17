@@ -46,11 +46,7 @@ export class ScheduleConflictUtil {
         (sectionStartTime >= newSectionStartTime &&
           sectionEndTime <= newSectionEndTime);
 
-      if (verify.overlappingDays && !verify.isOverlapping) {
-        return false;
-      }
-
-      return verify.overlappingDays || verify.isOverlapping;
+      return verify.overlappingDays && verify.isOverlapping;
     });
   }
 

@@ -56,7 +56,7 @@ describe('PDFService', () => {
           {
             subject: { name: 'Physics' },
             startTime: '09:30',
-            endTime: '10:30',
+            endTime: '10:50',
             teacher: { name: 'Dr. Brown' },
             classroom: { roomNumber: '102' },
           },
@@ -73,7 +73,6 @@ describe('PDFService', () => {
     });
 
     it('should log an error if PDF generation fails', async () => {
-      // Mock PDFDocument.create to throw an error
       (PDFDocument.create as jest.Mock).mockImplementation(() => {
         throw new Error('PDF creation failed');
       });
