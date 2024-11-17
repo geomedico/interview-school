@@ -38,15 +38,21 @@ export class SectionEntity {
   })
   daysOfWeek: DaysOfWeek[];
 
-  @ManyToOne(() => TeacherEntity, (teacher) => teacher.sections)
+  @ManyToOne(() => TeacherEntity, (teacher) => teacher.sections, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   teacher: TeacherEntity;
 
-  @ManyToOne(() => SubjectEntity, (subject) => subject.sections)
+  @ManyToOne(() => SubjectEntity, (subject) => subject.sections, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   subject: SubjectEntity;
 
-  @ManyToOne(() => ClassroomEntity, (classroom) => classroom.sections)
+  @ManyToOne(() => ClassroomEntity, (classroom) => classroom.sections, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   classroom: ClassroomEntity;
 

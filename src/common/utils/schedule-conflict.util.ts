@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
-import { SectionEntity } from './../postgres/pg-models/section.entity';
-import { DaysOfWeek } from './enums';
+import { SectionEntity } from './../../postgres/pg-models/section.entity';
+import { DaysOfWeek } from './../enums';
 
 @Injectable()
 export class ScheduleConflictUtil {
@@ -14,6 +14,11 @@ export class ScheduleConflictUtil {
     existingSections: SectionEntity[],
     newSection: SectionEntity,
   ): boolean {
+    const verify = {
+      isOverlapping: false,
+      overlappingDays: false,
+    };
+
     if (!newSection.startTime || !newSection.endTime) {
       throw new Error('Start time or end time is undefined in new section');
     }
@@ -29,22 +34,23 @@ export class ScheduleConflictUtil {
       const sectionStartTime = this.parseTime(section.startTime);
       const sectionEndTime = this.parseTime(section.endTime);
 
-      const overlappingDays = newSection?.daysOfWeek?.some((day) =>
+      verify.overlappingDays = newSection?.daysOfWeek?.some((day) =>
         section?.daysOfWeek?.includes(day),
       );
 
-      if (!overlappingDays) {
-        return false;
-      }
-
-      return (
+      verify.isOverlapping =
         (newSectionStartTime >= sectionStartTime &&
           newSectionStartTime < sectionEndTime) ||
         (newSectionEndTime > sectionStartTime &&
           newSectionEndTime <= sectionEndTime) ||
         (sectionStartTime >= newSectionStartTime &&
-          sectionEndTime <= newSectionEndTime)
-      );
+          sectionEndTime <= newSectionEndTime);
+
+      if (verify.overlappingDays && !verify.isOverlapping) {
+        return false;
+      }
+
+      return verify.overlappingDays || verify.isOverlapping;
     });
   }
 

@@ -42,7 +42,7 @@ services:
     networks:
       - school-network
 
-  #Backend Seeder Service
+  # Backend Seeder Service
   backend-seed:
     build:
       context: .

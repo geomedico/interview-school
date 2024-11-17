@@ -12,7 +12,7 @@ import { StudentService } from './../students/student.service';
 import { PDFService } from '../pdf/pdf.service';
 
 import { CreateSectionDto } from './DTO/create-section.dto';
-import { ScheduleConflictUtil } from './../../common/schedule-conflict.util';
+import { ScheduleConflictUtil } from './../../common/utils/schedule-conflict.util';
 import { DaysOfWeek } from './../../common/enums';
 
 const mockRepository = jest.fn(() => ({

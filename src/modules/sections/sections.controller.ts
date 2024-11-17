@@ -12,6 +12,7 @@ import { ApiOperation, ApiTags, ApiBody, ApiResponse } from '@nestjs/swagger';
 import { Response } from 'express';
 import { CreateSectionDto } from './DTO/create-section.dto';
 import { IResponse } from './../../common/interfaces';
+import { DaysOfWeek } from './../../common/enums';
 
 @ApiTags('Sections')
 @Controller('sections')
@@ -28,9 +29,13 @@ export class SectionsController {
         subjectId: 'subject-id',
         classroomId: 'classroom-id',
         name: 'Section Name',
-        daysOfWeek: ['MONDAY', 'WEDNESDAY', 'FRIDAY'],
+        daysOfWeek: [
+          DaysOfWeek.MONDAY,
+          DaysOfWeek.WEDNESDAY,
+          DaysOfWeek.FRIDAY,
+        ],
         startTime: '08:00',
-        endTime: '09:00',
+        endTime: '08:50',
         studentIds: ['student1', 'student2'],
       },
     },
@@ -47,9 +52,13 @@ export class SectionsController {
           name: 'Section Name',
           teacherId: 'teacher-id',
           classroomId: 'classroom-id',
-          daysOfWeek: ['MONDAY', 'WEDNESDAY', 'FRIDAY'],
+          daysOfWeek: [
+            DaysOfWeek.MONDAY,
+            DaysOfWeek.WEDNESDAY,
+            DaysOfWeek.FRIDAY,
+          ],
           startTime: '08:00',
-          endTime: '09:00',
+          endTime: '08:50',
         },
       },
     },

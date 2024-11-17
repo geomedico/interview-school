@@ -13,8 +13,7 @@ import { TeacherService } from './../teachers/teacher.service';
 import { SubjectService } from './../subjects/subject.service';
 import { ClassroomService } from './../classrooms/classroom.service';
 import { StudentService } from './../students/student.service';
-import { ScheduleConflictUtil } from './../../common/schedule-conflict.util';
-
+import { ScheduleConflictUtil } from './../../common/utils/schedule-conflict.util';
 @Injectable()
 export class SectionsService {
   constructor(
@@ -80,7 +79,6 @@ export class SectionsService {
         throw new ConflictException('Teacher has a scheduling conflict');
       }
 
-      // Check for time conflicts with classroom's other sections
       const classroomSections = await this.sectionRepository.find({
         where: { classroom },
       });
