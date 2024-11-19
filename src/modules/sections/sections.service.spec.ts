@@ -51,6 +51,7 @@ const mockPDFService = {
 const mockScheduleConflictUtil = {
   parseTime: jest.fn(),
   hasTimeConflict: jest.fn(),
+  convertToDate: jest.fn(),
   areValidDays: jest.fn((daysOfWeek) => {
     // Mocking the real logic to validate days
     const validPatterns = [

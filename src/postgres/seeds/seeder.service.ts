@@ -7,7 +7,8 @@ import { SubjectEntity } from './../pg-models/subject.entity';
 import { ClassroomEntity } from './../pg-models/classroom.entity';
 import { StudentEntity } from './../pg-models/student.entity';
 import { SectionEntity } from './../pg-models/section.entity';
-import { DaysOfWeek } from '../../common/enums';
+import { DaysOfWeek } from './../../common/enums';
+import { ScheduleConflictUtil } from './../../common/utils/schedule-conflict.util';
 
 @Injectable()
 export class SeederService {
@@ -22,6 +23,7 @@ export class SeederService {
     private readonly studentRepo: Repository<StudentEntity>,
     @InjectRepository(SectionEntity)
     private readonly sectionRepo: Repository<SectionEntity>,
+    private readonly scheduleConflictUtil: ScheduleConflictUtil,
     private logger: Logger,
   ) {}
 
@@ -70,8 +72,8 @@ export class SeederService {
 
       const sectionPayload = [
         {
-          startTime: '08:00',
-          endTime: '08:50',
+          startTime: this.scheduleConflictUtil.convertToDate('08:00'),
+          endTime: this.scheduleConflictUtil.convertToDate('08:50'),
           name: 'section #1',
           daysOfWeek: [
             DaysOfWeek.MONDAY,
@@ -84,8 +86,8 @@ export class SeederService {
           students: [students[0], students[1]],
         },
         {
-          startTime: '09:00',
-          endTime: '09:50',
+          startTime: this.scheduleConflictUtil.convertToDate('09:00'),
+          endTime: this.scheduleConflictUtil.convertToDate('09:50'),
           name: 'section #2',
           daysOfWeek: [DaysOfWeek.TUESDAY, DaysOfWeek.THURSDAY],
           teacher: teachers[1],

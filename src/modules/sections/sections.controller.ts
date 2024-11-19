@@ -77,7 +77,6 @@ export class SectionsController {
     @Body() createSectionDto: CreateSectionDto,
   ): Promise<IResponse> {
     try {
-      console.log('createSectionDto::', createSectionDto);
       const section =
         await this.sectionsService.createSection(createSectionDto);
       return {

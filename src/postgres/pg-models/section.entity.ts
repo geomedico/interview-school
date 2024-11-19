@@ -25,11 +25,11 @@ export class SectionEntity {
   @Column()
   name: string;
 
-  @Column()
-  startTime: string;
+  @Column({ type: 'timestamp' })
+  startTime: Date;
 
-  @Column()
-  endTime: string;
+  @Column({ type: 'timestamp' })
+  endTime: Date;
 
   @Column({
     type: 'enum',

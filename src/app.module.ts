@@ -2,6 +2,8 @@ import { Module, Logger } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ConfigsModule } from './common/config.module';
+import { UtilsModule } from './common/utils/schedule-conflict.module';
+
 import { ClassroomEntity } from './postgres/pg-models/classroom.entity';
 import { SectionEntity } from './postgres/pg-models/section.entity';
 import { StudentEntity } from './postgres/pg-models/student.entity';
@@ -28,6 +30,7 @@ import { StudentModule } from './modules/students/student.module';
       SubjectEntity,
       TeacherEntity,
     ]),
+    UtilsModule,
     ClassroomModule,
     TeacherModule,
     TeacherModule,

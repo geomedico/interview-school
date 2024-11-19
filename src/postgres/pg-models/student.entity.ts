@@ -3,7 +3,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToMany,
-  JoinTable,
+  JoinColumn,
 } from 'typeorm';
 import { SectionEntity } from './section.entity';
 import { v4 as uuidv4 } from 'uuid';
@@ -17,6 +17,6 @@ export class StudentEntity {
   name: string;
 
   @ManyToMany(() => SectionEntity, (section) => section.students)
-  @JoinTable()
+  @JoinColumn()
   sections: SectionEntity[];
 }

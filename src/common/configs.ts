@@ -23,7 +23,7 @@ const APPConfig = registerAs(ConfigKey.App, () => ({
 }));
 
 const host =
-  process.env.NODE_ENV === 'development'
+  process.env.NODE_ENV === Environment.Development
     ? '0.0.0.0'
     : process.env.DATABASE_HOST;
 const DBConfig = registerAs(ConfigKey.Db, () => ({

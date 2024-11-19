@@ -57,7 +57,11 @@ export class SectionsService {
       }
 
       let validStudents = [];
-      const entityPayload = { startTime, endTime, daysOfWeek } as SectionEntity;
+
+      const startDate = this.scheduleConflictUtil.convertToDate(startTime);
+      const endDate = this.scheduleConflictUtil.convertToDate(endTime); 
+
+      const entityPayload = { startTime: startDate, endTime: endDate, daysOfWeek } as SectionEntity;
 
       if (studentIds && studentIds.length > 0) {
         validStudents = await this.studentService.findByIds(studentIds);
@@ -117,8 +121,8 @@ export class SectionsService {
         name,
         classroom,
         daysOfWeek,
-        startTime,
-        endTime,
+        startTime: startDate,
+        endTime: endDate,
         students: validStudents,
       });
 

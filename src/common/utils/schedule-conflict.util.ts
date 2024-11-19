@@ -5,9 +5,13 @@ import { DaysOfWeek } from './../enums';
 
 @Injectable()
 export class ScheduleConflictUtil {
-  public parseTime(time: string): number {
-    const [hours, minutes] = time.split(':').map(Number);
-    return hours * 100 + minutes;
+
+  public convertToDate(time: string): Date {
+
+    const dateString = new Date().toISOString().split('T').slice(0, 1).join('');
+    const date = new Date(`${dateString}T${time}:00`);
+
+    return date;
   }
 
   public hasTimeConflict(
@@ -26,19 +30,28 @@ export class ScheduleConflictUtil {
     };
 
     if (!newSection.startTime || !newSection.endTime) {
-      throw new Error('Start time or end time is undefined in new section');
+      throw new Error('Start time or end time is undefined in the new section');
     }
 
-    const newSectionStartTime = this.parseTime(newSection.startTime);
-    const newSectionEndTime = this.parseTime(newSection.endTime);
+    const newSectionStartTime = newSection.startTime.getTime(); 
+    const newSectionEndTime = newSection.endTime.getTime();
+
+    const durationMs = newSectionEndTime - newSectionStartTime;
+    const allowedDurationsMs = [50 * 60 * 1000, 80 * 60 * 1000];
+
+    if (!allowedDurationsMs.includes(durationMs)) {
+      throw new Error(
+        'Invalid section duration. Duration must be either 50 or 80 minutes.',
+      );
+    }
 
     return existingSections?.some((section) => {
       if (!section.startTime || !section.endTime) {
         return false;
       }
 
-      const sectionStartTime = this.parseTime(section.startTime);
-      const sectionEndTime = this.parseTime(section.endTime);
+      const sectionStartTime = section.startTime.getTime();
+      const sectionEndTime = section.endTime.getTime();
 
       comparator.overlappingDays = newSection?.daysOfWeek?.some((day) =>
         section?.daysOfWeek?.includes(day),
