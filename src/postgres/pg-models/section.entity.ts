@@ -6,6 +6,7 @@ import {
   JoinColumn,
   ManyToMany,
   JoinTable,
+  Index,
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -41,18 +42,21 @@ export class SectionEntity {
   @ManyToOne(() => TeacherEntity, (teacher) => teacher.sections, {
     onDelete: 'CASCADE',
   })
+  @Index()
   @JoinColumn()
   teacher: TeacherEntity;
 
   @ManyToOne(() => SubjectEntity, (subject) => subject.sections, {
     onDelete: 'CASCADE',
   })
+  @Index()
   @JoinColumn()
   subject: SubjectEntity;
 
   @ManyToOne(() => ClassroomEntity, (classroom) => classroom.sections, {
     onDelete: 'CASCADE',
   })
+  @Index()
   @JoinColumn()
   classroom: ClassroomEntity;
 

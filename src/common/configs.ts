@@ -22,12 +22,16 @@ const APPConfig = registerAs(ConfigKey.App, () => ({
   appName: process.env.APP_NAME || 'school-backend',
 }));
 
+const host =
+  process.env.NODE_ENV === 'development'
+    ? '0.0.0.0'
+    : process.env.DATABASE_HOST;
 const DBConfig = registerAs(ConfigKey.Db, () => ({
-  host: process.env.POSTGRES_HOST || '0.0.0.0',
-  port: Number(process.env.POSTGRES_PORT) || 5432,
-  username: process.env.POSTGRES_USER || 'postgres',
-  password: process.env.POSTGRES_PASSWORD || 'password',
-  database: process.env.POSTGRES_DB || 'school',
+  host,
+  port: Number(process.env.DATABASE_PORT),
+  username: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
+  database: process.env.DATABASE_NAME,
 }));
 
 export const configurations = [APPConfig, DBConfig];
